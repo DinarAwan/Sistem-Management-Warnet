@@ -31,16 +31,19 @@ public:
     
     void tampilkanHeader() const {
         cout << "==============================================\n";
-        cout << "              Warnet Suka Suka                \n";
+        cout << "|              Warnet Suka Suka              | \n";
         cout << "==============================================\n";
     }
 
     void prosesLogin() {
-        cout << "\nSELAMAT DATANG DI WARNET SUKA-SUKA\n";
-        cout << "Silahkan login terlebih dahulu:\n";
-        cout << "Masukkan username: ";
-        cin >> username;
-        cout << "Masukkan password: ";
+    	cout<<endl;
+    	cout<<"==========================================\n";
+        cout<<"|   SELAMAT DATANG DI WARNET SUKA-SUKA   |\n";
+        cout<<"==========================================\n";
+        cout<<" Silahkan login terlebih dahulu:\n";
+        cout<<" Masukkan username: ";
+        cin>> username;
+        cout<<" Masukkan password: ";
         cin >> password;
 
         if (username == "admin" && password == "1234") {
@@ -50,6 +53,7 @@ public:
             role = 2; // member
             cout << "\nLogin berhasil! Anda masuk sebagai MEMBER.\n";
         }
+        cout<<endl;
     }
     
     void jalankanSistem() {
@@ -66,13 +70,15 @@ private:
     void menuAdmin() {
         int pilihan;
         do {
-            cout << "\n========== MENU ADMIN ==========\n";
-            cout << "1. Tambah Komputer\n";
-            cout << "2. Lihat Daftar Komputer\n";
-            cout << "3. Edit Komputer\n";
-            cout << "4. Hapus Komputer\n";
-            cout << "5. Keluar\n";
-            cout << "Masukkan pilihan (1-5): ";
+            cout << "========== MENU ADMIN ============\n";
+            cout << "| 1. Tambah Komputer             |\n";
+            cout << "| 2. Lihat Daftar Komputer       |\n";
+            cout << "| 3. Edit Komputer               |\n";
+            cout << "| 4. Hapus Komputer              |\n";
+            cout << "| 5. Lihat Pesanan makanan       |\n";
+            cout << "| 6. Keluar                      |\n";
+            cout << "==================================\n";
+            cout << "Masukkan pilihan (1-6): ";
             cin >> pilihan;
             
             switch (pilihan) {
@@ -89,23 +95,28 @@ private:
                     hapusKomputer();
                     break;
                 case 5:
-                    cout << "Terima kasih! Sampai jumpa.\n";
+                   lihatPesanan();
                     break;
+                case 6:
+                	cout<<"Terimakasih sampai jumpa kembali!";
+                	break;
                 default:
                     cout << "Pilihan tidak valid! Silakan coba lagi.\n";
             }
-        } while (pilihan != 5);
+        } while (pilihan != 6);
     }
 
     void menuMember() {
         int pilihan;
         do {
-            cout << "\n========== MENU MEMBER ==========\n";
-            cout << "1. Lihat Komputer Tersedia\n";
-            cout << "2. Sewa Komputer\n";
-            cout << "3. Kembalikan Komputer\n";
-            cout << "4. Keluar\n";
-            cout << "Masukkan pilihan (1-4): ";
+            cout<<"\n========== MENU MEMBER ==========\n";
+            cout<<"| 1. Lihat Komputer Tersedia      |\n";
+            cout<<"| 2. Sewa Komputer                |\n";
+            cout<<"| 3. Kembalikan Komputer          |\n";
+            cout<<"| 4. Menu Makanan                 |\n";
+            cout<<"| 5. Keluar                       |\n";
+            cout<<"===================================\n";
+            cout << " Masukkan pilihan (1-5): ";
             cin >> pilihan;
             
             switch (pilihan) {
@@ -119,14 +130,103 @@ private:
                     kembalikanKomputer();
                     break;
                 case 4:
-                    cout << "Terima kasih! Sampai jumpa.\n";
+					menuMakanan();
                     break;
+                case 5:
+                	cout<<"Terima kasih! Sampai jumpa.\n";
+                	break;
                 default:
                     cout << "Pilihan tidak valid! Silakan coba lagi.\n";
             }
-        } while (pilihan != 4);
+        } while (pilihan != 5);
     }
     
+    void menuMakanan(){
+    	int pilihan, jumlah;
+    	float totalPerMenu, totalKeseluruhan;
+    	const int jumlahMenu=10;
+    	char konfirm, lanjut;
+    	
+    	string nama[jumlahMenu]={
+			"indomie goreng", "indomie rebus", "indomie rendang", "nasi goreng", "Mie Ayam",
+			"Es Teh", "Kopi Hitam", "Air putih", "Josua", "Kuku Bima"
+		};
+		
+		float harga[jumlahMenu]={
+			5000, 5000, 6000, 10000,
+		 	10000, 2500, 3000, 2000, 4000, 5000 
+			};
+			
+		cout<<endl;
+		do{
+    	cout<<"=========  MENU MAKANAN =========\n";
+    	for (int i=0;i<jumlahMenu;i++){
+    		cout<<i+1<<"."<<nama[i]<<" "<<"Rp."<<harga[i]<<endl;
+		}
+    	cout<<" "<<endl;
+    	cout<<"Masukkan makanan yang ingin dibeli (1-10): ";
+    	cin>>pilihan;
+    	
+    	if (pilihan<1 || pilihan>jumlahMenu){
+    		cout<<"Makanan tidak ada";
+    		return;
+		}
+		
+		cout<<"Masukkan jumlah makanan yang ingin dipesan: ";
+		cin>>jumlah;
+		
+		totalPerMenu=harga[pilihan-1]*jumlah;
+		totalKeseluruhan+=totalPerMenu;
+		
+		cout<<"Anda memesan makanan/minuman "<<nama[pilihan-1]<<" sebanyak "<<jumlah<<endl;
+		cout<<"Total : "<<totalPerMenu<<endl;
+		
+		cout<<"\nIngin memesan makanan lain? (y/n): ";
+		cin>>lanjut;
+		
+	}while(lanjut=='y'||lanjut=='Y');
+		if(totalKeseluruhan>0){
+			cout<<endl;
+			cout<<"Total yang harus dibayarkan: Rp."<<totalKeseluruhan<<endl;
+			cout<<"Lanjut ke pembayaran? (y/n): ";
+		cin>>konfirm;
+		
+		if (konfirm=='y'||konfirm=='Y'){
+			cout<<"\npembayaran berhasil"<<endl;
+			cout<<"silahkan menunggu makanan atau minumannya. Terimakasih"<<endl;
+			
+		ofstream file("pesanan.txt", ios::app);
+			if (file.is_open()){
+				file<<"Username: "<<username<<endl;
+				 file<< "Total Pembayaran: Rp. "<<totalKeseluruhan<<endl;
+        		 file<< "-----------------------------------------\n";
+        	file.close();
+		}
+		}else{
+			cout<<"Pesanan dibatalkan";
+		}
+		}
+}
+
+	void lihatPesanan(){
+		ifstream file("pesanan.txt");
+		if (!file){
+			cout<<"belum ada data makanan";
+			return;
+		}
+		
+		cout << "\n========== DAFTAR PESANAN MAKANAN & MINUMAN ==========\n";
+   		string line;
+    	while (getline(file, line)) {
+        cout << line << endl;
+    }
+    	cout << "========================================================\n";
+    file.close();
+		
+
+	}
+	
+	
     void tambahKomputer() {
         int jumlah;
         cout << "\nBerapa komputer yang ingin ditambahkan? ";
@@ -318,24 +418,24 @@ private:
                 size_t pos = 0;
                 int field = 0;
                 
-                while ((pos = line.find("|")) != string::npos) {
-                    string token = line.substr(0, pos);
-                    switch (field) {
-                        case 0: komputer.kode = token; break;
-                        case 1: komputer.kategori = token; break;
-                        case 2: komputer.deskripsi = token; break;
-                        case 3: {
+            while ((pos = line.find("|")) != string::npos) {
+                string token = line.substr(0, pos);
+            	switch (field) {
+                case 0: komputer.kode = token; break;
+            	case 1: komputer.kategori = token; break;
+                case 2: komputer.deskripsi = token; break;
+                case 3: {
                             
-                            double harga = 0.0;
-                            for (size_t j = 0; j < token.length(); j++) {
-                                if (token[j] >= '0' && token[j] <= '9') {
-                                    if (harga == 0.0) harga = token[j] - '0';
-                                    else harga = harga * 10 + (token[j] - '0');
-                                }
-                            }
-                            komputer.hargaPerJam = harga;
-                            break;
-                        }
+                double harga = 0.0;
+                for (size_t j = 0; j < token.length(); j++) {
+                	if (token[j] >= '0' && token[j] <= '9') {
+                    if (harga == 0.0) harga = token[j] - '0';
+                    else harga = harga * 10 + (token[j] - '0');
+                    	}
+                    }
+                    komputer.hargaPerJam = harga;
+                    break;
+                    }
                     }
                     line.erase(0, pos + 1);
                     field++;
