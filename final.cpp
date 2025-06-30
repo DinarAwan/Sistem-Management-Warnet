@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <vector>
 #include <sstream>
+#include <algorithm>
 using namespace std;
 
 class Warnet {
@@ -27,6 +28,16 @@ private:
         
         MenuItem() : harga(0.0) {}
         MenuItem(string n, double h) : nama(n), harga(h) {}
+    };
+
+    struct Pesanan {
+        string username;
+        vector<string> detailPesanan;
+        string totalPembayaran;
+        
+        Pesanan() {}
+        Pesanan(string user, vector<string> detail, string total) 
+            : username(user), detailPesanan(detail), totalPembayaran(total) {}
     };
     
     struct BookingInfo {
@@ -103,42 +114,42 @@ public:
     void tampilkanHeader() const {
     cout << "################################################################################\n";
     cout << "#                                                                              #\n";
-    cout << "#  ��     ��  �����  ������  ���    �� ������� ��������                        #\n";
-    cout << "#  ��     �� ��   �� ��   �� ����   �� ��         ��                           #\n";
-    cout << "#  ��  �  �� ������� ������  �� ��  �� �����      ��                           #\n";
-    cout << "#  �� ��� �� ��   �� ��   �� ��  �� �� ��         ��                           #\n";
-    cout << "#   ��� ���  ��   �� ��   �� ��   ���� �������    ��                           #\n";
+    cout << "#  ï¿½ï¿½     ï¿½ï¿½  ï¿½ï¿½ï¿½ï¿½ï¿½  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  ï¿½ï¿½ï¿½    ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½                        #\n";
+    cout << "#  ï¿½ï¿½     ï¿½ï¿½ ï¿½ï¿½   ï¿½ï¿½ ï¿½ï¿½   ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½   ï¿½ï¿½ ï¿½ï¿½         ï¿½ï¿½                           #\n";
+    cout << "#  ï¿½ï¿½  ï¿½  ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  ï¿½ï¿½ ï¿½ï¿½  ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½      ï¿½ï¿½                           #\n";
+    cout << "#  ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½   ï¿½ï¿½ ï¿½ï¿½   ï¿½ï¿½ ï¿½ï¿½  ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½         ï¿½ï¿½                           #\n";
+    cout << "#   ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½  ï¿½ï¿½   ï¿½ï¿½ ï¿½ï¿½   ï¿½ï¿½ ï¿½ï¿½   ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½    ï¿½ï¿½                           #\n";
     cout << "#                                                                              #\n";
-    cout << "#     ������� ��    �� ��   ��  �����      ������� ��    �� ��   ��  �����     #\n";
-    cout << "#     ��      ��    �� ��  ��  ��   ��     ��      ��    �� ��  ��  ��   ��    #\n";
-    cout << "#     ������� ��    �� �����   �������     ������� ��    �� �����   �������    #\n";
-    cout << "#          �� ��    �� ��  ��  ��   ��          �� ��    �� ��  ��  ��   ��    #\n";
-    cout << "#     �������  ������  ��   �� ��   ��     �������  ������  ��   �� ��   ��    #\n";
+    cout << "#     ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½    ï¿½ï¿½ ï¿½ï¿½   ï¿½ï¿½  ï¿½ï¿½ï¿½ï¿½ï¿½      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½    ï¿½ï¿½ ï¿½ï¿½   ï¿½ï¿½  ï¿½ï¿½ï¿½ï¿½ï¿½     #\n";
+    cout << "#     ï¿½ï¿½      ï¿½ï¿½    ï¿½ï¿½ ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½   ï¿½ï¿½     ï¿½ï¿½      ï¿½ï¿½    ï¿½ï¿½ ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½   ï¿½ï¿½    #\n";
+    cout << "#     ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½    ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½   ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½     ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½    ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½   ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½    #\n";
+    cout << "#          ï¿½ï¿½ ï¿½ï¿½    ï¿½ï¿½ ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½   ï¿½ï¿½          ï¿½ï¿½ ï¿½ï¿½    ï¿½ï¿½ ï¿½ï¿½  ï¿½ï¿½  ï¿½ï¿½   ï¿½ï¿½    #\n";
+    cout << "#     ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  ï¿½ï¿½   ï¿½ï¿½ ï¿½ï¿½   ï¿½ï¿½     ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  ï¿½ï¿½   ï¿½ï¿½ ï¿½ï¿½   ï¿½ï¿½    #\n";
     cout << "#                                                                              #\n";
     cout << "################################################################################\n";
     cout << "#                                                                            #\n";
     cout << "#  __________________________ GAMING PARADISE __________________________     #\n";
     cout << "#                                                                              #\n";
     cout << "#  +-------------------------------------------------------------------------+  #\n";
-    cout << "#  �                         WARNET TERBAIK SE-Yogyakarta                   �  #\n";
-    cout << "#  �                           SUPER FAST INTERNET                          �  #\n";
-    cout << "#  �                           HIGH-END GAMING PC                           �  #\n";
-    cout << "#  �                           24/7 NON-STOP SERVICE                        �  #\n";
+    cout << "#  ï¿½                         WARNET TERBAIK SE-Yogyakarta                   ï¿½  #\n";
+    cout << "#  ï¿½                           SUPER FAST INTERNET                          ï¿½  #\n";
+    cout << "#  ï¿½                           HIGH-END GAMING PC                           ï¿½  #\n";
+    cout << "#  ï¿½                           24/7 NON-STOP SERVICE                        ï¿½  #\n";
     cout << "#  +-------------------------------------------------------------------------+  #\n";
     cout << "#                                                                              #\n";
     cout << "################################################################################\n";
     cout << "#                                                                              #\n";
     cout << "#    +----------------------------------------------------------------------+   #\n";
-    cout << "#    �                        ?? FASILITAS PREMIUM ??                       �   #\n";
-    cout << "#    �----------------------------------------------------------------------�   #\n";
-    cout << "#    �    Intel Core i7 + RTX 4070 Gaming PC                                �   #\n";
-    cout << "#    �    Internet Speed 1 Gbps Fiber Optic                                 �   #\n";
-    cout << "#    �    Gaming Headset + Mechanical Keyboard                              �   #\n";
-    cout << "#    �    Ergonomic Gaming Chair & LED Lighting                             �   #\n";
-    cout << "#    �    Full AC & Temperature Controlled Room                             �   #\n";
-    cout << "#    �    Food & Beverages Available 24/7                                   �   #\n";
-    cout << "#    �    Tournament & Event Space                                          �   #\n";
-    cout << "#    �    Free WiFi for Mobile Devices                                      �   #\n";
+    cout << "#    ï¿½                        ?? FASILITAS PREMIUM ??                       ï¿½   #\n";
+    cout << "#    ï¿½----------------------------------------------------------------------ï¿½   #\n";
+    cout << "#    ï¿½    Intel Core i7 + RTX 4070 Gaming PC                                ï¿½   #\n";
+    cout << "#    ï¿½    Internet Speed 1 Gbps Fiber Optic                                 ï¿½   #\n";
+    cout << "#    ï¿½    Gaming Headset + Mechanical Keyboard                              ï¿½   #\n";
+    cout << "#    ï¿½    Ergonomic Gaming Chair & LED Lighting                             ï¿½   #\n";
+    cout << "#    ï¿½    Full AC & Temperature Controlled Room                             ï¿½   #\n";
+    cout << "#    ï¿½    Food & Beverages Available 24/7                                   ï¿½   #\n";
+    cout << "#    ï¿½    Tournament & Event Space                                          ï¿½   #\n";
+    cout << "#    ï¿½    Free WiFi for Mobile Devices                                      ï¿½   #\n";
     cout << "#    +----------------------------------------------------------------------+   #\n";
     cout << "#                                                                              #\n";
     cout << "################################################################################\n";
@@ -158,20 +169,20 @@ public:
     cout << "################################################################################\n";
     cout << "#                                                                              #\n";
     cout << "#    ?----------------------------------------------------------------------?   #\n";
-    cout << "#    �                        GAME POPULER TERSEDIA                         �   #\n";
-    cout << "#    +----------------------------------------------------------------------�   #\n";
-    cout << "#    �   VALORANT      �    DOTA 2       �   CS:GO         �    GTAV        �   #\n";
-    cout << "#    �    FIFA 2024    �   eFootball     �   Fall Guys     �   Minecraft    �   #\n";
-    cout << "#    �   Mobile Legends�   PUBG Mobile   �   Genshin       �   Overwatch    �   #\n";
-    cout << "#    �   Call of Duty  �   Apex Legends  �   League        �   Among Us     �   #\n";
-    cout << "#    �   Fortnite      �   Rocket League �   Photoshop     �    Office      �   #\n";
+    cout << "#    ï¿½                        GAME POPULER TERSEDIA                         ï¿½   #\n";
+    cout << "#    +----------------------------------------------------------------------ï¿½   #\n";
+    cout << "#    ï¿½   VALORANT      ï¿½    DOTA 2       ï¿½   CS:GO         ï¿½    GTAV        ï¿½   #\n";
+    cout << "#    ï¿½    FIFA 2024    ï¿½   eFootball     ï¿½   Fall Guys     ï¿½   Minecraft    ï¿½   #\n";
+    cout << "#    ï¿½   Mobile Legendsï¿½   PUBG Mobile   ï¿½   Genshin       ï¿½   Overwatch    ï¿½   #\n";
+    cout << "#    ï¿½   Call of Duty  ï¿½   Apex Legends  ï¿½   League        ï¿½   Among Us     ï¿½   #\n";
+    cout << "#    ï¿½   Fortnite      ï¿½   Rocket League ï¿½   Photoshop     ï¿½    Office      ï¿½   #\n";
     cout << "#    ?----------------------------------------------------------------------?   #\n";
     cout << "#                                                                              #\n";
     cout << "################################################################################\n";
     cout << "#                                                                              #\n";
-    cout << "#  ����������������������������������������������������������������������������  #\n";
-    cout << "#  �                           INFORMASI LOKASI                               �  #\n";
-    cout << "#  ����������������������������������������������������������������������������  #\n";
+    cout << "#  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  #\n";
+    cout << "#  ï¿½                           INFORMASI LOKASI                               ï¿½  #\n";
+    cout << "#  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  #\n";
     cout << "#                                                                              #\n";
     cout << "#      Alamat    : Jl. Pemuda No. 123, Semarang Tengah, Jawa Tengah            #\n";
     cout << "#      Telepon   : (024) 123-4567 / WhatsApp: 0812-3456-7890                   #\n";
@@ -182,7 +193,7 @@ public:
     cout << "#                                                                              #\n";
     cout << "################################################################################\n";
     cout << "#                                                                              #\n";
-    cout << "#  ���������������������  EVENT & PROMO  �����������������������               #\n";
+    cout << "#  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  EVENT & PROMO  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½               #\n";
     cout << "#                                                                              #\n";
     cout << "#      GRAND OPENING PROMO - DISKON 50%  UNTUK MEMBER BARU!                    #\n";
     cout << "#      TOURNAMENT VALORANT SETIAP WEEKEND - HADIAH 10 JUTA!                    #\n";
@@ -193,9 +204,9 @@ public:
     cout << "#                                                                              #\n";
     cout << "################################################################################\n";
     cout << "#                                                                              #\n";
-    cout << "#   ����������������������������������������������������������������������������   #\n";
-    cout << "#   �                         KEMITRAAN & SPONSOR                              �   #\n";
-    cout << "#   ����������������������������������������������������������������������������   #\n";
+    cout << "#   ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½   #\n";
+    cout << "#   ï¿½                         KEMITRAAN & SPONSOR                              ï¿½   #\n";
+    cout << "#   ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½   #\n";
     cout << "#                                                                             #\n";
     cout << "#      Powered by: INTEL, NVIDIA, ASUS ROG, MSI Gaming                        #\n";
     cout << "#      Internet by: INDIHOME Fiber Optic 1Gbps                                #\n";
@@ -218,20 +229,20 @@ public:
     cout << "################################################################################\n";
     cout << "#                                                                              #\n";
     cout << "#  +----------------------------------------------------------------------+   #\n";
-    cout << "#  �                        ATURAN & KETENTUAN                            |   #\n";
+    cout << "#  ï¿½                        ATURAN & KETENTUAN                            |   #\n";
     cout << "#  +----------------------------------------------------------------------+  #\n";
-    cout << "#  �   Wajib menggunakan ID Card/KTP untuk registrasi                    �   #\n";
-    cout << "#  �   Dilarang membawa makanan & minuman dari luar                      �   #\n";
-    cout << "#  �   Menjaga kebersihan & tidak merusak fasilitas                      �   #\n";
-    cout << "#  �   Gunakan headset untuk menjaga kenyamanan bersama                  �   #\n";
-    cout << "#  �   Dilarang mengakses konten dewasa & ilegal                         �   #\n";
-    cout << "#  �   Parking fee: Motor Rp 2.000, Mobil Rp 5.000                       �   #\n";
-    cout << "#  �   Lost & found: Hubungi staff dalam 24 jam                          �   #\n";
+    cout << "#  ï¿½   Wajib menggunakan ID Card/KTP untuk registrasi                    ï¿½   #\n";
+    cout << "#  ï¿½   Dilarang membawa makanan & minuman dari luar                      ï¿½   #\n";
+    cout << "#  ï¿½   Menjaga kebersihan & tidak merusak fasilitas                      ï¿½   #\n";
+    cout << "#  ï¿½   Gunakan headset untuk menjaga kenyamanan bersama                  ï¿½   #\n";
+    cout << "#  ï¿½   Dilarang mengakses konten dewasa & ilegal                         ï¿½   #\n";
+    cout << "#  ï¿½   Parking fee: Motor Rp 2.000, Mobil Rp 5.000                       ï¿½   #\n";
+    cout << "#  ï¿½   Lost & found: Hubungi staff dalam 24 jam                          ï¿½   #\n";
     cout << "#  +------------------------------------------------------------------------+   #\n";
     cout << "#                                                                              #\n";
     cout << "################################################################################\n";
     cout << "#                                                                              #\n";
-    cout << "#  ��������������������������������������������������������������������������   #\n";
+    cout << "#  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½   #\n";
     cout << "#                      SELAMAT DATANG DI SURGA GAMERS!                    #\n";
     cout << "#                  PENGALAMAN GAMING TERBAIK MENANTI ANDA!              #\n";
     cout << "#                         LET'S PLAY & HAVE FUN!                         #\n";
@@ -450,6 +461,9 @@ private:
                 	laporanHarian();
                 	break;
                 case 12:
+//                	cariPesananByUsername();
+                    break;
+                case 13:
                 	cout<<"Terimakasih admin"<<endl;
                 	break;
                 default:
@@ -468,15 +482,14 @@ private:
             cout<<"| 4. Booking Komputer                |\n";
             cout<<"| 5. Menu Makanan                    |\n";
             cout<<"| 6. Kritik & Saran                  |\n";
-            cout<<"| 7. Lihat Booking                   |\n";
-            cout<<"| 8. Tambah Waktu Komputer           |\n";
-            cout<<"| 8. Tambah Waktu sewa               |\n";
-            cout<<"| 9. Lihat Fasilitas yang didapat    |\n";
-            cout<<"| 10. Cari Komputer Berdasarkan Kode |\n";
-            cout<<"| 11. Tukar Poin                     |\n";
-            cout<<"| 12. Riwayat Pribadi                |\n";
-            cout<<"| 13. Ubah Pasword                   |\n";
-            cout<<"| 14. Logout                         |\n";
+            cout<<"| 7. Tambah waktu Komputer           |\n";
+            cout<<"| 8. Lihat Fasilitas yang didapat      |\n";
+            cout<<"| 9. Cari Komputer Berdasarkan Kode  |\n";
+//            cout<<"| 10. Cari Komputer Berdasarkan Kode |\n";
+//            cout<<"| 11. Tukar Poin                     |\n";
+//            cout<<"| 12. Riwayat Pribadi                |\n";
+//            cout<<"| 13. Ubah Pasword                   |\n";
+            cout<<"| 10. Logout                         |\n";
             cout<<"===================================\n";
             cout << " Masukkan pilihan (1-10): ";
             cin >> pilihan;
@@ -501,31 +514,32 @@ private:
                     inputKritikSaran();
                     break;
                 case 7:
-                    lihatBooking2();
+                	tambahWaktuKomputer();
+//                    lihatBooking2();
                     break;
                 case 8:
-                    tambahWaktuKomputer();
+                      fasilitasYangDidapat();
                     break;
                 case 9:
-                    fasilitasYangDidapat();
+                   	searchingKomputerBerdasarkanKode();
                     break;
-                case 10:
-                	searchingKomputerBerdasarkanKode();
-//   topUpSaldo();                 
-                    break;
-                case 11:
-                    tukarPoin();
-                    break;
-                case 12:
-                    riwayatPribadi();
-                    break;
-                case 13:
-                    ubahPassword();
-                    break;
+//                case 10:
+////   topUpSaldo();                 
+//                    break;
+//                case 11:
+//                    tukarPoin();
+//                    break;
+//                case 12:
+//                    riwayatPribadi();
+//                    break;
+//                case 13:
+//                    ubahPassword();
+//                    break;
                 default:
                     cout << "Pilihan tidak valid! Silakan coba lagi.\n";
             }
-        } while (pilihan != 14);
+        } while (pilihan != 10);
+        cout << "Keluar";
     }
     
     void lihatJumlahKomputer() {
@@ -1913,7 +1927,7 @@ void tampilkanKomputerTerurut() {
     }
     
     // Footer summary
-    cout << "�������������������������������������������������������������������������������" << endl;
+    cout << "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½" << endl;
     cout << "                           DATA BERHASIL DITAMPILKAN                           " << endl;
     cout << "                             TERURUT BERDASARKAN KODE                          " << endl;
     cout << "                               WARNET SUKA SUKA                                " << endl;
@@ -1988,6 +2002,154 @@ void searchingKomputerBerdasarkanKode() {
         cout << "Komputer dengan kode \"" << kodeYangDicari << "\" tidak ditemukan!\n";
     }
 }
+//
+//vector<Pesanan> bacaPesananDariFile() {
+//    vector<Pesanan> daftarPesanan;
+//    ifstream file("pesanan.txt");
+//    string line;
+//    
+//    if (!file.is_open()) {
+//        cout << "File pesanan.txt tidak ditemukan atau tidak dapat dibuka!\n";
+//        return daftarPesanan;
+//    }
+//    
+//    while (getline(file, line)) {
+//        if (line.find("Username: ") != string::npos) {
+//            Pesanan pesanan;
+//            // Ambil username
+//            pesanan.username = line.substr(10); // Menghapus "Username: "
+//            
+//            // Lewati baris "Detail Pesanan:"
+//            getline(file, line);
+//            
+//            // Baca detail pesanan
+//            while (getline(file, line) && line.find("- ") != string::npos) {
+//                pesanan.detailPesanan.push_back(line);
+//            }
+//            
+//            // Baris saat ini adalah total pembayaran
+//            pesanan.totalPembayaran = line;
+//            
+//            daftarPesanan.push_back(pesanan);
+//        }
+//    }
+//    
+//    file.close();
+//    return daftarPesanan;
+//}
+
+//// Fungsi untuk mengurutkan pesanan berdasarkan username (untuk binary search)
+//bool bandingkanUsername(const Pesanan& a, const Pesanan& b) {
+//    return a.username < b.username;
+//}
+
+// Fungsi binary search untuk mencari pesanan berdasarkan username
+//int binarySearchUsername(vector<Pesanan>& daftarPesanan, const string& targetUsername) {
+//    // Urutkan dulu berdasarkan username
+//    sort(daftarPesanan.begin(), daftarPesanan.end(), bandingkanUsername);
+//    
+//    int left = 0;
+//    int right = daftarPesanan.size() - 1;
+//    
+//    while (left <= right) {
+//        int mid = left + (right - left) / 2;
+//        
+//        if (daftarPesanan[mid].username == targetUsername) {
+//            return mid; // Username ditemukan
+//        } else if (daftarPesanan[mid].username < targetUsername) {
+//            left = mid + 1;
+//        } else {
+//            right = mid - 1;
+//        }
+//    }
+//    
+//    return -1; // Username tidak ditemukan
+//}
+//
+//// Fungsi untuk menampilkan detail pesanan
+//void tampilkanPesanan(const Pesanan& pesanan) {
+//    cout << "================================\n";
+//    cout << "Username: " << pesanan.username << endl;
+//    cout << "Detail Pesanan:\n";
+//    for (size_t i = 0; i < pesanan.detailPesanan.size(); i++) {
+//        cout << pesanan.detailPesanan[i] << endl;
+//    }
+//    cout << pesanan.totalPembayaran << endl;
+//    cout << "================================\n";
+//}
+
+//// Fungsi utama untuk mencari dan menampilkan pesanan berdasarkan username
+//void cariPesananByUsername() {
+//    string cariUsername;
+//    cout << "Masukkan username yang ingin dicari: ";
+//    cin >> cariUsername;
+//    
+    // Baca semua pesanan dari file
+//    vector<Pesanan> daftarPesanan = bacaPesananDariFile();
+//    
+//    if (daftarPesanan.empty()) {
+//        cout << "Tidak ada data pesanan yang tersedia!\n";
+//        return;
+//    }
+//    
+//    // Lakukan binary search
+//    int indeksDitemukan = binarySearchUsername(daftarPesanan, cariUsername);
+//    
+//    if (indeksDitemukan != -1) {
+//        cout << "\nPesanan ditemukan!\n";
+//        tampilkanPesanan(daftarPesanan[indeksDitemukan]);
+//        
+//        // Cari pesanan lain dengan username yang sama (jika ada multiple pesanan)
+//        cout << "\nMencari pesanan lain dengan username yang sama...\n";
+//        int jumlahPesananDitemukan = 1;
+//        
+//        // Cari ke kiri
+//        for (int i = indeksDitemukan - 1; i >= 0 && daftarPesanan[i].username == cariUsername; i--) {
+//            tampilkanPesanan(daftarPesanan[i]);
+//            jumlahPesananDitemukan++;
+//        }
+//        
+//        // Cari ke kanan
+//        for (size_t i = indeksDitemukan + 1; i < daftarPesanan.size() && daftarPesanan[i].username == cariUsername; i++) {
+//            tampilkanPesanan(daftarPesanan[i]);
+//            jumlahPesananDitemukan++;
+//        }
+//        
+//        cout << "Total pesanan ditemukan: " << jumlahPesananDitemukan << endl;
+//        
+//    } else {
+//        cout << "Username '" << cariUsername << "' tidak ditemukan dalam data pesanan!\n";
+//    }
+//}
+//
+//// Fungsi tambahan untuk menampilkan semua username yang tersedia
+//void tampilkanSemuaUsername() {
+//    vector<Pesanan> daftarPesanan = bacaPesananDariFile();
+//    
+//    if (daftarPesanan.empty()) {
+//        cout << "Tidak ada data pesanan yang tersedia!\n";
+//        return;
+//    }
+//    
+//    cout << "Daftar Username yang tersedia:\n";
+//    cout << "==============================\n";
+//    
+//    // Urutkan berdasarkan username untuk menampilkan dengan rapi
+//    sort(daftarPesanan.begin(), daftarPesanan.end(), bandingkanUsername);
+//    
+//    string lastUsername = "";
+//    int nomorUrut = 1;
+//    
+//    for (size_t i = 0; i < daftarPesanan.size(); i++) {
+//        if (daftarPesanan[i].username != lastUsername) {
+//            cout << nomorUrut << ". " << daftarPesanan[i].username << endl;
+//            lastUsername = daftarPesanan[i].username;
+//            nomorUrut++;
+//        }
+//    }
+//    cout << "==============================\n";
+//}
+
 
 };
 
