@@ -57,7 +57,7 @@ struct Member {
     string password;
     int poin;
     double saldo;
- 
+    
     Member() : poin(0), saldo(0.0) {}
 };
 
@@ -97,6 +97,8 @@ void tukarPoin() {
 }
     
     int role;
+    string member[100];
+    int jumlahMem=0;
     string username;
     string password;
     vector<Komputer> daftarKomputer;
@@ -368,7 +370,6 @@ public:
 
     void prosesLogin() {
         cout<<endl;
-
         cout<<"==========================================\n";
         cout<<"|                                        |\n";
         cout<<"|   SELAMAT DATANG DI WARNET SUKA-SUKA   |\n";
@@ -384,9 +385,17 @@ public:
         if (username == "admin" && password == "1234") {
             role = 1; // admin
             cout << "\nLogin berhasil! Anda masuk sebagai ADMIN.\n";
+            SimpanMember();
         } else {
             role = 2; // member
             cout << "\nLogin berhasil! Anda masuk sebagai MEMBER.\n";
+             if (jumlahMem<100){
+                member[jumlahMem]=username;
+                jumlahMem++;
+                simpan();
+            }else{
+                cout<<"penuh";
+            }
         }
         cout<<endl;
     }
@@ -404,6 +413,73 @@ public:
         }
     }
 
+    //Cari Member start
+    void SimpanMember(){
+        ifstream file("member.txt");
+        while(getline(file, member[jumlahMem])){
+            jumlahMem++;
+        }
+        file.close();
+    }   
+
+    void simpan(){
+        ofstream file("member.txt",ios::app);
+        file<<username<<endl;
+        file.close();
+    }
+
+    void Cari(){
+        string cari;
+        SortsUsern(member,jumlahMem);
+        cout<<"Masukkan username yang ingin dicari: ";
+        cin>>cari;
+
+        int index = binarySearch(member, jumlahMem, cari);
+
+            if(index != -1){
+                cout<<"Username ditemukan: "<<member[index]<<endl;
+                cout<<"Pelanggan ke-"<<index+1<<endl;
+                cout<<"========================================"<<endl;
+                return menuAdmin();
+            }else{
+                cout<<"Maaf Username "<<cari<<" Tidak Ditemukan";
+            }
+
+    }
+
+    void SortsUsern(string arr[], int n){
+        for(int i=0;i<n-1;i++){
+            for(int j=0;j<n-1;j++){
+                if (arr[j]>arr[j+1]){
+                    string temp=arr[j];
+                    arr[j]=arr[j+1];
+                    arr[j+1]=temp;
+                }
+            }
+        }
+    }
+
+    int binarySearch(string arr[], int ukuran, string kunci ){
+        int kiri=0;
+        int kanan=ukuran-1;
+        int tengah;
+
+        while(kiri<=kanan){
+            tengah=(kiri+kanan)/2;
+
+            if(arr[tengah] == kunci){
+                return tengah;
+            }else if(arr[tengah]<kunci){
+                kiri=tengah+1;
+            }else{
+                kanan=tengah-1;
+            }
+        }
+        return -1;
+    }
+    
+    //cari member end
+
 private:
     void menuAdmin() {
         int pilihan;
@@ -420,7 +496,8 @@ private:
             cout << "| 9. Tampilkan Data Buuble Short |\n";
             cout << "| 10. Lihat menu member          |\n";
             cout << "| 11. Pendapatan harian          |\n";
-            cout << "| 12. keluar                     |\n";
+            cout << "| 12. Cari Username              |\n";
+            cout << "| 13. keluar                     |\n";
             cout << "==================================\n";
             cout << "Masukkan pilihan (1-12): ";
             
@@ -461,7 +538,7 @@ private:
                 	laporanHarian();
                 	break;
                 case 12:
-//                	cariPesananByUsername();
+                    Cari();
                     break;
                 case 13:
                 	cout<<"Terimakasih admin"<<endl;
